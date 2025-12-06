@@ -4,7 +4,7 @@
 
 // 1. CSV URL: 🌟 FIXED: Using the Google Visualization API for reliable CSV output.
 // IMPORTANT: Replace the placeholder below with the ID you copied from your sheet's browser URL.
-const WISHES_CSV_URL = 'https://docs.google.com/spreadsheets/d/PASTE_YOUR_SPREADSHEET_ID_HERE/gviz/tq?tqx=out:csv&sheet=WishesSheet'; 
+const WISHES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqqcKPAStgKwqTNo4HYEltpwLGgXlUa-eIfyF5X5L9ATJF4GS2yi43cVxjshWeaYPlOfGYI1gzs6Ci/pubhtml?gid=0&single=true'; 
 
 // 2. WEB APP URL: (Your current, deployed Apps Script link)
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyU92H0553E4K-bJpZo67wBQPgFIoKbH29qlGZirSK6y58WGze6JYKnlAkNDyLQG6WQKA/exec'; 
@@ -298,5 +298,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Run the filter function when the page loads
     filterEvents();
+
 
 });
