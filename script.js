@@ -2,11 +2,11 @@
 // CONFIGURATION: GOOGLE SHEET URLs (YOUR KEYS)
 // ======================================================================
 
-// 1. CSV URL: 🌟 FIXED: Using the Google Visualization API for reliable CSV output.
-// IMPORTANT: Replace the placeholder below with the ID you copied from your sheet's browser URL.
-const WISHES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqqcKPAStgKwqTNo4HYEltpwLGgXlUa-eIfyF5X5L9ATJF4GS2yi43cVxjshWeaYPlOfGYI1gzs6Ci/pubhtml?gid=0&single=true'; 
+// 1. CSV URL: 🔴 CRITICAL FIX - PASTE YOUR SPREADSHEET ID HERE.
+// This uses the Visualization API for reliable data reading.
+const WISHES_CSV_URL = 'https://docs.google.com/spreadsheets/d/PASTE_YOUR_SPREADSHEET_ID_HERE/gviz/tq?tqx=out:csv&sheet=WishesSheet'; 
 
-// 2. WEB APP URL: (Your current, deployed Apps Script link)
+// 2. WEB APP URL: (This link is confirmed working for submission)
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyU92H0553E4K-bJpZo67wBQPgFIoKbH29qlGZirSK6y58WGze6JYKnlAkNDyLQG6WQKA/exec'; 
 
 const wishesFeed = document.querySelector('.wishes-feed');
@@ -17,7 +17,9 @@ const wishesFeed = document.querySelector('.wishes-feed');
 // ======================================================================
 document.addEventListener('DOMContentLoaded', function() {
 
-    // ... (Sections 1, 2, 3: Audio, Animations, Countdown - NO CHANGES) ...
+    // ======================================================================
+    // 1. AUDIO & WELCOME SCREEN (NO CHANGES)
+    // ======================================================================
     const welcomeScreen = document.querySelector('.welcome-overlay'); 
     const enterBtn = document.querySelector('#enter-btn'); 
     const bgAudio = document.getElementById('bg-audio'); 
@@ -39,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ======================================================================
+    // 2. SCROLL ANIMATIONS (NO CHANGES)
+    // ======================================================================
     const observerOptions = { threshold: 0.1 };
 
     const observer = new IntersectionObserver((entries) => {
@@ -51,6 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.slide-up').forEach(el => observer.observe(el));
 
+    // ======================================================================
+    // 3. COUNTDOWN TIMER (NO CHANGES)
+    // ======================================================================
     const targetDate = new Date("Dec 20, 2025 12:00:00").getTime();
     const countdownGrid = document.querySelector('.countdown-grid'); 
 
@@ -95,12 +103,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ======================================================================
-    // 4. WISHES SYSTEM (GOOGLE SHEET FETCHING & SUBMISSION LOGIC)
+    // 4. WISHES SYSTEM (CORE LOGIC)
     // ======================================================================
     
     const wishForm = document.getElementById('wish-form');
 
-    // 🌟 UPDATED CSV Parsing Function for better reliability
+    // 🌟 UPDATED CSV Parsing Function for better reliability with Visualization API
     function parseCSV(csvText) {
         const lines = csvText.trim().split('\n');
         if (lines.length < 2) return [];
@@ -177,11 +185,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!wishesFeed) return;
 
         try {
+            // Attempt to fetch data from the WISHES_CSV_URL
             const response = await fetch(WISHES_CSV_URL);
+            
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // This block handles 404 or other HTTP errors
+                throw new Error(`HTTP error! status: ${response.status} Check WISHES_CSV_URL and Sheet Sharing.`);
             }
+            
             const csvData = await response.text();
+            
+            // Check if the response is actually HTML (a common error)
+            if (csvData.trim().startsWith('<')) {
+                throw new Error('Received HTML instead of CSV. Check if you are using the correct Visualization API link.');
+            }
+            
             const wishes = parseCSV(csvData);
             
             // Reverse array to show newest wishes first 
@@ -193,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error fetching or rendering wishes:', error);
             if (wishesFeed) {
-                 wishesFeed.innerHTML = '<p class="text-center text-danger">Failed to load wishes. Please check the sheet URL.</p>';
+                 wishesFeed.innerHTML = '<p class="text-center text-danger">Failed to load wishes. Please check the sheet URL and public sharing settings. ERROR: ' + error.message + '</p>';
             }
         }
     }
@@ -298,6 +316,5 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Run the filter function when the page loads
     filterEvents();
-
 
 });
