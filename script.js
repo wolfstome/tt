@@ -316,3 +316,4 @@ document.addEventListener('DOMContentLoaded', function() {
     filterEvents();
 
 });
+
